@@ -95,6 +95,11 @@ elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -m64")
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -msimd128")
+endif()
+
+
     file(GLOB_RECURSE SIMD_BASE_SRC ${TRUNK_DIR}/src/Simd/SimdBase*.cpp)
     set_source_files_properties(${SIMD_BASE_SRC} PROPERTIES COMPILE_FLAGS "${COMMON_CXX_FLAGS}")
 
