@@ -219,7 +219,13 @@ namespace Simd
                 }
             }
 #else
+#ifdef EMSCRIPTEN
+            // On Wasm, sizeof(size_t) == sizeof(uint32_t), but size_t == long
+            // and uint32_t == int, which is not interchangable.
+            size_t &bitBuffer = stream.BitBuffer();
+#else
             uint32_t &bitBuffer = stream.BitBuffer();
+#endif
             for (; i < size; ++i, ++bits)
             {
                 bitCount += bits[0][1];
