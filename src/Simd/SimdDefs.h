@@ -220,7 +220,7 @@
 #define SIMD_ARM64_ENABLE
 #endif
 
-#if defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE)
+#if defined(SIMD_X86_ENABLE) || defined(SIMD_X64_ENABLE) || defined(EMSCRIPTEN)
 
 #if !defined(SIMD_SSE_DISABLE) && defined(__SSE__)
 #define SIMD_SSE_ENABLE
