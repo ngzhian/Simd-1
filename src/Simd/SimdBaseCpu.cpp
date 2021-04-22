@@ -160,6 +160,9 @@ namespace Simd
 #elif defined(__GNUC__)
         size_t CpuSocketNumber()
         {
+#if defined(EMSCRIPTEN)
+          return 1;
+#else
             uint32_t number = 0;
             ::FILE * p = ::popen("lscpu -b -p=Socket | grep -v '^#' | sort -u | wc -l", "r");
             if (p)
@@ -170,10 +173,14 @@ namespace Simd
                 ::pclose(p);
             }
             return number;
+#endif
         }
 
         size_t CpuCoreNumber()
         {
+#if defined(EMSCRIPTEN)
+          return 1;
+#else
             uint32_t number = 0;
             ::FILE * p = ::popen("lscpu -b -p=Core | grep -v '^#' | sort -u | wc -l", "r");
             if (p)
@@ -184,6 +191,7 @@ namespace Simd
                 ::pclose(p);
             }
             return number;
+#endif
         }
 
         SIMD_INLINE size_t CorrectIfZero(size_t value, size_t otherwise)
