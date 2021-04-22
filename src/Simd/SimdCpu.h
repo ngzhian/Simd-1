@@ -136,10 +136,12 @@ namespace Simd
 
         SIMD_INLINE void SetFastMode(SimdBool value)
         {
+#if !defined(EMSCRIPTEN)
             if (value)
                 _mm_setcsr(_mm_getcsr() | (SCR_FTZ | SCR_DAZ));
             else
                 _mm_setcsr(_mm_getcsr() & ~(SCR_FTZ | SCR_DAZ));
+#endif
         }
     }
 #endif
