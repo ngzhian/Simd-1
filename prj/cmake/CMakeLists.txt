@@ -179,7 +179,7 @@ endif()
             set_source_files_properties(${TEST_SRC_CPP} PROPERTIES COMPILE_FLAGS "${COMMON_CXX_FLAGS} ${SIMD_TEST_FLAGS} -mtune=native")
         endif()
         add_executable(Test ${TEST_SRC_C} ${TEST_SRC_CPP})
-        target_link_libraries(Test Simd -lpthread)
+        target_link_libraries(Test Simd -lpthread "-s INITIAL_MEMORY=100mb")
     endif()
 
 elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL "ppc") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "ppc64"))
