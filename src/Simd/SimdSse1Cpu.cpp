@@ -35,7 +35,11 @@ namespace Simd
     {
         SIMD_INLINE bool SupportedByCPU()
         {
+#ifdef EMSCRIPTEN
+            return true;
+#else
             return Base::CheckBit(Cpuid::Ordinary, Cpuid::Edx, Cpuid::SSE);
+#endif
         }
 
         SIMD_INLINE bool SupportedByOS()
