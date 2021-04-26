@@ -52,6 +52,42 @@ namespace Simd
 
 #elif defined(__GNUC__) || (defined(_MSC_VER) && defined(SIMD_NEON_ENABLE))
 
+#if defined(EMSCRIPTEN)
+
+#define SIMD_CHAR_AS_LONGLONG(a) (((long)a) & 0xFF)
+
+#define SIMD_SHORT_AS_LONGLONG(a) (((long )a) & 0xFFFF)
+
+#define SIMD_INT_AS_LONGLONG(a) (((long )a) & 0xFFFFFFFF)
+
+#define SIMD_LL_SET1_EPI8(a) \
+    SIMD_CHAR_AS_LONGLONG(a) | (SIMD_CHAR_AS_LONGLONG(a) << 8) | \
+    (SIMD_CHAR_AS_LONGLONG(a) << 16) | (SIMD_CHAR_AS_LONGLONG(a) << 24)
+
+#define SIMD_LL_SET2_EPI8(a, b) \
+    SIMD_CHAR_AS_LONGLONG(a) | (SIMD_CHAR_AS_LONGLONG(b) << 8) | \
+    (SIMD_CHAR_AS_LONGLONG(a) << 16) | (SIMD_CHAR_AS_LONGLONG(b) << 24)
+
+#define SIMD_LL_SETR_EPI8(a, b, c, d) \
+    SIMD_CHAR_AS_LONGLONG(a) | (SIMD_CHAR_AS_LONGLONG(b) << 8) | \
+    (SIMD_CHAR_AS_LONGLONG(c) << 16) | (SIMD_CHAR_AS_LONGLONG(d) << 24)
+
+#define SIMD_LL_SET1_EPI16(a) \
+    SIMD_SHORT_AS_LONGLONG(a) | (SIMD_SHORT_AS_LONGLONG(a) << 16)
+
+#define SIMD_LL_SET2_EPI16(a, b) \
+    SIMD_SHORT_AS_LONGLONG(a) | (SIMD_SHORT_AS_LONGLONG(b) << 16)
+
+#define SIMD_LL_SETR_EPI16(a, b) \
+    SIMD_SHORT_AS_LONGLONG(a) | (SIMD_SHORT_AS_LONGLONG(b) << 16)
+
+#define SIMD_LL_SET1_EPI32(a) \
+    SIMD_INT_AS_LONGLONG(a)
+
+/* #define SIMD_LL_SET2_EPI32(a, b) \ */
+/*     SIMD_INT_AS_LONGLONG(a) | (SIMD_INT_AS_LONGLONG(b) << 32) */
+#else
+
 #define SIMD_CHAR_AS_LONGLONG(a) (((long long)a) & 0xFF)
 
 #define SIMD_SHORT_AS_LONGLONG(a) (((long long)a) & 0xFFFF)
@@ -93,6 +129,8 @@ namespace Simd
 
 #define SIMD_LL_SET2_EPI32(a, b) \
     SIMD_INT_AS_LONGLONG(a) | (SIMD_INT_AS_LONGLONG(b) << 32)
+
+#endif
 
 #endif//defined(__GNUC__) || (defined(_MSC_VER) && defined(SIMD_NEON_ENABLE))
 
@@ -150,6 +188,58 @@ namespace Simd
 
 #elif defined(__GNUC__)
 
+// Temporary workaround for Emscripten.
+// Compat headers in Emscripten uses int as base type for __m128i, but
+// native emmintrin.h uses long long as base type.
+#if defined(EMSCRIPTEN)
+
+#define SIMD_MM_SET1_EPI8(a)                                          \
+  {                                                                   \
+    SIMD_LL_SET1_EPI8(a), SIMD_LL_SET1_EPI8(a), SIMD_LL_SET1_EPI8(a), \
+        SIMD_LL_SET1_EPI8(a)                                          \
+  }
+
+#define SIMD_MM_SET2_EPI8(a0, a1)                            \
+  {                                                          \
+    SIMD_LL_SET2_EPI8(a0, a1), SIMD_LL_SET2_EPI8(a0, a1),    \
+        SIMD_LL_SET2_EPI8(a0, a1), SIMD_LL_SET2_EPI8(a0, a1) \
+  }
+
+#define SIMD_MM_SETR_EPI8(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, aa, ab, ac, ad, ae, af) \
+    {SIMD_LL_SETR_EPI8(a0, a1, a2, a3), SIMD_LL_SETR_EPI8(a4, a5, a6, a7), SIMD_LL_SETR_EPI8(a8, a9, aa, ab), SIMD_LL_SETR_EPI8(ac, ad, ae, af)}
+
+#define SIMD_MM_SET1_EPI16(a) \
+    {SIMD_LL_SET1_EPI16(a), SIMD_LL_SET1_EPI16(a), SIMD_LL_SET1_EPI16(a), SIMD_LL_SET1_EPI16(a)}
+
+#define SIMD_MM_SET2_EPI16(a0, a1) \
+    {SIMD_LL_SET2_EPI16(a0, a1), SIMD_LL_SET2_EPI16(a0, a1), SIMD_LL_SET2_EPI16(a0, a1), SIMD_LL_SET2_EPI16(a0, a1)}
+
+#define SIMD_MM_SETR_EPI16(a0, a1, a2, a3, a4, a5, a6, a7)     \
+  {                                                            \
+    SIMD_LL_SETR_EPI16(a0, a1), SIMD_LL_SETR_EPI16(a2, a3),    \
+        SIMD_LL_SETR_EPI16(a4, a5), SIMD_LL_SETR_EPI16(a6, a7) \
+  }
+
+#define SIMD_MM_SET1_EPI32(a) \
+    {static_cast<int>(a), static_cast<int>(a), static_cast<int>(a), static_cast<int>(a)}
+
+#define SIMD_MM_SET2_EPI32(a0, a1) \
+    {static_cast<int>(a0), static_cast<int>(a1), static_cast<int>(a0), static_cast<int>(a1)}
+
+#define SIMD_MM_SETR_EPI32(a0, a1, a2, a3) \
+    {a0, a1, a2, a3}
+
+#define SIMD_MM_SET1_EPI64(a) \
+    {a, a}
+
+#define SIMD_MM_SET2_EPI64(a0, a1) \
+    {a0, a1}
+
+#define SIMD_MM_SETR_EPI64(a0, a1) \
+    {a0, a1}
+
+#else
+
 #define SIMD_MM_SET1_EPI8(a) \
     {SIMD_LL_SET1_EPI8(a), SIMD_LL_SET1_EPI8(a)}
 
@@ -185,6 +275,8 @@ namespace Simd
 
 #define SIMD_MM_SETR_EPI64(a0, a1) \
     {a0, a1}
+
+#endif
 
 #endif// defined(_MSC_VER) || defined(__GNUC__)
 
