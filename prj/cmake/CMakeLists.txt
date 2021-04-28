@@ -231,7 +231,7 @@ elseif((CMAKE_SYSTEM_PROCESSOR MATCHES "arm") OR (CMAKE_SYSTEM_PROCESSOR STREQUA
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
         set(CXX_NEON_FLAG "-mfpu=neon -mfpu=neon-fp16 -mfp16-format=ieee")
     else()
-        set(CXX_NEON_FLAG "")
+        set(CXX_NEON_FLAG "-mfpu=neon -msimd128")
     endif()
 
     if((CMAKE_CXX_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER MATCHES "clang"))    
