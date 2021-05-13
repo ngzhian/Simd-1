@@ -154,7 +154,9 @@ namespace Simd
 #if defined(SIMD_ARM64_ENABLE)
             __asm__ volatile("mrs %[dst], FPCR" : [dst] "=r" (dst));
 #else
+#if !defined(EMSCRIPTEN)
             __asm__ volatile("vmrs %[dst], FPSCR" : [dst] "=r" (dst));
+#endif
 #endif
 #endif
             return dst;
@@ -166,7 +168,9 @@ namespace Simd
 #if defined(SIMD_ARM64_ENABLE)
             __asm__ volatile("msr FPCR, %[src]" : : [src] "r" (src));
 #else
+#if !defined(EMSCRIPTEN)
             __asm__ volatile("vmsr FPSCR, %[src]" : : [src] "r" (src));
+#endif
 #endif
 #endif
     }
