@@ -40,7 +40,7 @@ namespace Simd
 #if defined(_MSC_VER)
             return true;
 #elif defined(__GNUC__)
-#if defined(SIMD_ARM64_ENABLE)
+#if defined(SIMD_ARM64_ENABLE) or defined(EMSCRIPTEN)
             return true;
 #else
             return Base::CheckBit(AT_HWCAP, HWCAP_NEON);

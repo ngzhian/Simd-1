@@ -282,9 +282,9 @@
 
 #endif//defined(SIMD_PPC_ENABLE) || defined(SIMD_PPC64_ENABLE) 
 
-#if defined(SIMD_ARM_ENABLE) || defined(SIMD_ARM64_ENABLE)
+#if defined(SIMD_ARM_ENABLE) || defined(SIMD_ARM64_ENABLE) || defined(EMSCRIPTEN)
 
-#if !defined(SIMD_NEON_DISABLE) && (defined(__ARM_NEON) || defined(SIMD_ARM64_ENABLE) || defined(EMSCRIPEN))
+#if !defined(SIMD_NEON_DISABLE) && (defined(__ARM_NEON) || defined(SIMD_ARM64_ENABLE) || defined(EMSCRIPTEN))
 #define SIMD_NEON_ENABLE
 #endif
 
